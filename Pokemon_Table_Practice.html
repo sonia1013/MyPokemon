@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+    <title>寶可夢圖鑑列表</title>
+    <style>
+        img {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>寶可夢圖鑑列表</h1>
+    <button>產生Pokemon列表</button>
+
+
+    <!-- <table>
+        <th>
+        <td></td>
+        <tbody></tbody>
+        </th>
+    </table> -->
+
+    <script>
+        let body = document.querySelector("body");
+        let table = document.querySelector("table");
+        table.setAttribute("border", "2");
+        let thead = document.querySelector("thead");
+        let tbody = document.querySelector("tbody");
+        table.appendChild(thead);
+
+        let attackTitle;
+        let arraySorted;
+        let sortStatus;
+
+
+        window.onload = () => getPokemonJSON();
+
+        document.querySelector("button").addEventListener("click", function () {
+            genTableTemplate();
+            genTableData(pokemonArrayNew);
+
+            TransformData(pokemonArray);
+            genTable(pokemonArrayNew);
+            //Attack欄位Click事件作排序
+            attackTitle = table.querySelector("thead>tr th:nth-child(4)");
+            attackTitle.addEventListener("click", function () {
+                alert('Attack.Click');
+                let arraySorted = pokemonArrayNew.sort(function (a, b) {
+                    if (a.Attack == b.Attack) { return 0; }
+                    return a.Attack > b.Attack ? 1 : -1;
+                });
+                console.log(arraySorted);
+            });
+        });
+
+
+
+        let pokemonArray = [];
+        let pokemonArrayNew = [];
+
+
+        function getPokemonJSON() {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                pokemonArray = JSON.parse(this.responseText);
+
+                xhr.open("GET", "https://raw.githubusercontent.com/apprunner/pokemon.json/master/pokedex.json");
+                xhr.send();
+            };
+        };
+
+        //產生Table樣板, thead, tbody
+        function genTableTemplate() {
+            let body = document.querySelector("body");
+            let table = document.createElement("table");
+            table.setAttribute("border", "2");
+
+            let thead = document.createElement("thead");
+            let tbody = document.createElement("tbody");
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            body.appendChild(table);
+        }
+
+        //function
+        function genTableData(dataArray) {
+            let titles = Object.keys(dataArray[0]);
+            addThead(titles);
+            dataArray.forEach((item) => {
+                let rowArray = Object.values(item);
+                addTbody(Object.values(item));
+            })
+        }
+
+        function TransformData(dataArray) {
+            dataArray.forEach(item => {
+                let id = item.id.toString().padStart(3, "0");
+                let type = item.type[0];
+                let name = item.name.chinese;
+                let hp = item.base.HP;
+                let attack = item.base.Attack;
+                let defense = item.base.Defense;
+                let sp_attack = item.base["Sp. Attack"];
+                let sp_defense = item.base["Sp. Defense"];
+                let speed = item.base.Speed;
+                let img = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${id}.png`;
+                let pokemon = { Id: id, Type: type, Name: name, Hp: hp, Attack: attack, Defense: defense, SpAttack: sp_attack, SpDefense: sp_defense, Img: img };
+                pokemonArrayNew.push(pokemon);
+                //console.log(pokemonArrayNew);
+            });
+
+        }
+
+    </script>
+</body>
+
+</html>

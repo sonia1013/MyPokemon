@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        window.onload = getPokemonJSON();
+
+        let pokemonArray = [];
+        let pokemonArrayNew = [];
+
+        function getPokemonJSON() {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                pokemonArray = JSON.parse(this.responseText);
+                TransformData(pokemonArray);
+                genTable(pokemonArrayNew);
+                attackTitle = table.querySelector("thead>tr th:nth");
+
+                xhr.open("GET", "https://raw.githubusercontent.com/apprunner/pokemon.json/master/pokedex.json");
+                xhr.send();
+            }
+        }
+
+
+        function TransformData(dataArray) {
+            dataArray.forEach(item => {
+                let id = item.id.toString().padStart(3, "0");
+                let type = item.type[0];
+                let name = item.name.chinese;
+                let hp = item.base.HP;
+                let attack = item.base.Attack;
+                let defense = item.base.Defense;
+                let sp_attack = item.base["Sp. Attack"];
+                let sp_defense = item.base["Sp. Defense"];
+                let speed = item.base.Speed;
+                let img = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${id}.png`;
+                let pokemon = { Id: id, Type: type, Name: name, Hp: hp, Attack: attack, Defense: defense, SpAttack: sp_attack, SpDefense: sp_defense, Img: img };
+                pokemonArrayNew.push(pokemon);
+                console.log(pokemonArrayNew);
+            });
+
+        }
+
+    </script>
+</body>
+
+</html>
