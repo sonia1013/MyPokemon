@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>寶可夢圖鑒列表</h1>
+    <button>產生 pokemon 列表</button>
+    <script>
+        let body, table, thead, tbody;
+        let attackTitle;
+        let arraySorted, sortKey, sortType;
+        let pokemonArray = [];
+        let pokemonArrayNew = [];
+        window.onload = () => getPokemonJSON();
+        document.querySelector("button").addEventListener("click", function () {
+            genTableTemplate(); //產生不含資料的 Table Thead Tbody 結構
+            genTableData(pokemonArrayNew); // 產生 Thead Tbody 資料
+            attackTitle = table.querySelector;
+        });
+        function getPokemonJSON() {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                pokemonArray = JSON.parse(this.responseText);
+                TransformData(pokemonArray);
+            };
+            xhr.open("GET", "https://raw.githubusercontent.com/apprunner/pokemon.json/master/pokedex.json");
+            xhr.send();
+        };
+        function TransformData(dataArray) {
+            dataArray.forEach(item => {
+                let id = item.id.toString().padStart(3, "0");
+                let name = item.name.chinese;
+                let hp = item.base.HP;
+                let attack = item.base.Attack;
+                let defense = item.base.Defense;
+                let sp_attack = item.base["Sp. Attack"];
+                let sp_defense = item.base["Sp. Defense"];
+                let speed = item.base.Speed;
+                let img = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${id}​.png`;
+                let pokemon = {
+                    Id: id,
+                    Name: name,
+                    Hp: hp,
+                    Attack: attack,
+                    Defense: defense,
+                    SpAttack: sp_attack,
+                    SpDefense: sp_defense,
+                    Img: img
+                };
+                pokemonArrayNew.push(pokemon);
+            });
+        }
+        function genTableTemplate() {
+            body = document.querySelector("body");
+            if (table == null || table == "undefined") {
+                table = document.createElement("table");
+                //table.setAttribute("border", "2");
+                thead = document.createElement("thead");
+                tbody = document.createElement("tbody");
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                body.appendChild(table);
+            }
+        }
+        function genTableData(dataArray) {
+            let titles = Object.keys(dataArray[0]);
+            addThead(titles);
+            //迭代陣列, 每個Item是一個Object, 再用.values()取值,回傳陣列
+            dataArray.forEach((item) => {
+                let rowArray = Object.values(item);
+                addTbody(Object.values(item));
+            });
+            //Replace image url with <img src=''/>
+            let imageTds = document.querySelectorAll("tbody>tr td:nth-child(8)");
+            imageTds.forEach(item => {
+                // console.log(item);
+                item.innerHTML = `<img src="${item.innerHTML}​" />`;
+            });
+        };
+        //Create Thead, ["sku", "price" ,"storage", "description"]
+        function addThead(titlesArray) {
+            let _tr = document.createElement('tr');
+            thead.appendChild(_tr);
+            titlesArray.forEach((item) => {
+                let _th = document.createElement('th');
+                _th.innerHTML = item;
+                _tr.appendChild(_th);
+            });
+        }
+        //Create Tbody  ["MW762", 10900, "32GB", "10.2 吋 iPad Wi-Fi 機型 32GB - 金色"]
+        function addTbody(rowArray) {
+            let _tr = document.createElement('tr');
+            tbody.append(_tr);
+            rowArray.forEach((item) => {
+                let _td = document.createElement('td');
+                _td.innerHTML = item;
+                // let _tdText = document.createTextNode(item);
+                // _td.appendChild(_tdText);
+                _tr.appendChild(_td);
+            });
+        };
+    </script>
+</body>
+
+</html>

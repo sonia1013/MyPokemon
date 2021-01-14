@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
     <title>寶可夢圖鑑列表</title>
     <style>
         img {
@@ -21,87 +22,89 @@
 <body>
     <h1>寶可夢圖鑑列表</h1>
     <button>產生Pokemon列表</button>
-
-
-    <!-- <table>
-        <th>
-        <td></td>
-        <tbody></tbody>
-        </th>
-    </table> -->
-
     <script>
-        let body = document.querySelector("body");
-        let table = document.querySelector("table");
-        table.setAttribute("border", "2");
-        let thead = document.querySelector("thead");
-        let tbody = document.querySelector("tbody");
-        table.appendChild(thead);
-
+        // let body = document.querySelector("body");
+        // let table = document.querySelector("table");
+        // //table.setAttribute("border", "2");
+        // let thead = document.querySelector("thead");
+        // let tbody = document.querySelector("tbody");
+        // //table.appendChild(thead);
+        // let attackTitle;
+        // let arraySorted;
+        // let sortStatus;
+        let body, table, thead, tbody;
         let attackTitle;
-        let arraySorted;
-        let sortStatus;
-
-
-        window.onload = () => getPokemonJSON();
-
-        document.querySelector("button").addEventListener("click", function () {
-            genTableTemplate();
-            genTableData(pokemonArrayNew);
-
-            TransformData(pokemonArray);
-            genTable(pokemonArrayNew);
-            //Attack欄位Click事件作排序
-            attackTitle = table.querySelector("thead>tr th:nth-child(4)");
-            attackTitle.addEventListener("click", function () {
-                alert('Attack.Click');
-                let arraySorted = pokemonArrayNew.sort(function (a, b) {
-                    if (a.Attack == b.Attack) { return 0; }
-                    return a.Attack > b.Attack ? 1 : -1;
-                });
-                console.log(arraySorted);
-            });
-        });
-
-
-
+        let arraySorted, sortKey, sortType;
         let pokemonArray = [];
         let pokemonArrayNew = [];
+        window.onload = () => getPokemonJSON();
+        document.querySelector("button").addEventListener("click", function () {
+            genTableTemplate(); //產生不含資料的 Table Thead Tbody 結構
+            genTableData(pokemonArrayNew);// 產生 Thead Tbody 資料
 
+            attackTitle = table.querySelector;
+            // //Attack欄位Click事件作排序
+            // attackTitle = table.querySelector("thead>tr th:nth-child(4)");
+            // attackTitle.addEventListener("click", function () {
+            //     alert('Attack.Click');
+            //     let arraySorted = pokemonArrayNew.sort(function (a, b) {
+            //         if (a.Attack == b.Attack) { return 0; }
+            //         return a.Attack > b.Attack ? 1 : -1;
+            //     });
+            //     console.log(arraySorted);
+            // });
+        });
 
         function getPokemonJSON() {
             let xhr = new XMLHttpRequest();
             xhr.onload = function () {
                 pokemonArray = JSON.parse(this.responseText);
-
-                xhr.open("GET", "https://raw.githubusercontent.com/apprunner/pokemon.json/master/pokedex.json");
-                xhr.send();
+                TransformData(pokemonArray);
             };
+            // genTable(pokemonArrayNew);
+            // attackTitle = table.querySelector("thead>tr th:nth");
+            xhr.open("GET", "https://raw.githubusercontent.com/apprunner/pokemon.json/master/pokedex.json");
+            xhr.send();
+
         };
 
         //產生Table樣板, thead, tbody
         function genTableTemplate() {
-            let body = document.querySelector("body");
-            let table = document.createElement("table");
-            table.setAttribute("border", "2");
-
-            let thead = document.createElement("thead");
-            let tbody = document.createElement("tbody");
-            table.appendChild(thead);
-            table.appendChild(tbody);
-            body.appendChild(table);
-        }
-
+            body = document.querySelector("body");
+            if (table == null || table == "undefined") {
+                table = document.createElement("table");
+                //table.setAttribute("border", "2");
+                thead = document.createElement("thead");
+                tbody = document.createElement("tbody");
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                body.appendChild(table);
+            };
+        };
         //function
+        // function genTableData(dataArray) {
+        //     let titles = Object.keys(dataArray[0]);
+        //     addThead(titles);
+        //     dataArray.forEach((item) => {
+        //         let rowArray = Object.values(item);
+        //         addTbody(Object.values(item));
+        //     })
+        // }
         function genTableData(dataArray) {
             let titles = Object.keys(dataArray[0]);
             addThead(titles);
+            //迭代陣列, 每個Item是一個Object, 再用.values()取值,回傳陣列
             dataArray.forEach((item) => {
                 let rowArray = Object.values(item);
                 addTbody(Object.values(item));
-            })
-        }
-
+            });
+            //Replace image url with <img src=''/>
+            let imageTds = document.querySelectorAll("tbody>tr td:nth-child(8)");
+            imageTds.forEach(item => {
+                // console.log(item);
+                item.innerHTML = `<img src="${item.innerHTML}" />`;
+            });
+        };
         function TransformData(dataArray) {
             dataArray.forEach(item => {
                 let id = item.id.toString().padStart(3, "0");
@@ -116,11 +119,32 @@
                 let img = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${id}.png`;
                 let pokemon = { Id: id, Type: type, Name: name, Hp: hp, Attack: attack, Defense: defense, SpAttack: sp_attack, SpDefense: sp_defense, Img: img };
                 pokemonArrayNew.push(pokemon);
-                //console.log(pokemonArrayNew);
+                // console.log(pokemonArrayNew);
             });
-
         }
 
+        //Create Thead, ["sku", "price" ,"storage", "description"]
+        function addThead(titlesArray) {
+            let _tr = document.createElement('tr');
+            thead.appendChild(_tr);
+            titlesArray.forEach((item) => {
+                let _th = document.createElement('th');
+                _th.innerHTML = item;
+                _tr.appendChild(_th);
+            });
+        };
+        //Create Tbody  ["MW762", 10900, "32GB", "10.2 吋 iPad Wi-Fi 機型 32GB - 金色"]
+        function addTbody(rowArray) {
+            let _tr = document.createElement('tr');
+            tbody.append(_tr);
+            rowArray.forEach((item) => {
+                let _td = document.createElement('td');
+                _td.innerHTML = item;
+                // let _tdText = document.createTextNode(item);
+                // _td.appendChild(_tdText);
+                _tr.appendChild(_td);
+            });
+        };
     </script>
 </body>
 

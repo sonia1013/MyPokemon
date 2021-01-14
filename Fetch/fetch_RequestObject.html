@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <h1>Fetch使用Request物件</h1>
+  <input type="text" id="url" size="120">
+  <button>Fecth抓取資料</button>
+  <div id="msg"></div>
+
+  <script type="module">
+    import { $g } from "./helpers.js";
+
+    let url = "https://raw.githubusercontent.com/apprunner/FileStorage/master/iPad_DataFixed.json";
+    //let url ="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg";
+    window.onload = function () {
+      $g("input").value = url;
+      $g("button").addEventListener("click", fetchRequestPost);
+    }
+    //Ex1
+    // function fetchRequestPost() {
+    //   const request = new Request(url);
+    //   fetch(request)
+    //     .then(response => response.text())
+    //     .then(text => {
+    //       $g("#msg").innerText = text;
+    //     })
+    //     .catch(ex => {
+    //       $g("#msg").innerText = ex;
+    //     })
+    // };
+    //Ex2
+    function fetchRequestPost() {
+      let request = new Request(url, { method: "POST", body: '{"name":"Baby","email":"a0917@gmail.com"}' });
+      fetch(request)
+        .then(response => response.text())
+        .then(text => {
+          $g("#msg").innerText = text;
+        })
+        .catch(ex => {
+          $g("#msg").innerText = ex;
+        })
+    };
+  </script>
+</body>
+
+</html>

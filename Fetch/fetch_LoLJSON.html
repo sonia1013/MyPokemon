@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+</head>
+
+<body>
+  <div id="msg"></div>
+
+
+  <script type="module">
+    import { $g } from "./helpers.js";
+
+    let jsonUrl = "https://ddragon.leagueoflegends.com/cdn/10.22.1/data/zh_TW/champion.json";
+
+    window.onload = getJSON();
+
+    function getText() {
+      fetch(jsonUrl)
+        .then((response) => response.text())
+        .then((result) => {
+          $g("#msg").innerHTML = result;
+        })
+        .catch((error) => {
+          //Handle the error
+          $g("#msg").innerHTML = error;
+        });
+    }
+
+    function getJSON() {
+      let url = $g("input").value;
+      fetch(url) //將JSON的字串轉為物件，然後進行資料處理
+        .then((response) => response.json())
+        .then((result) => {
+          $g("#msg").innerHTML = JSON.stringify(result);
+        })
+        .catch((error) => {
+          //Handle the error
+          $g("#msg").innerHTML = error;
+        });
+    }
+  </script>
+</body>
+
+</html>

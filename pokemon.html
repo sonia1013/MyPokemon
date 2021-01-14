@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <title>Document</title>
+</head>
+<style>
+  *{
+    margin:0px;
+    padding: 0px;
+    list-style: none;
+  }
+  header{
+    text-align: center;
+    background-color: darkslategrey;
+  }
+  body{
+    background-color: steelblue;
+    /* background: radial-gradient(circle at 20% 80%, rgb(247, 233, 49),rgb(201, 150, 248), #f19b2b);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover; */
+  }  
+  h1{
+    text-align: center;
+    font-size: 60px;
+    padding: 30px 0 15px;
+    color: goldenrod;
+    text-shadow: 1px orange;
+  }
+  button{
+    padding: 5px 20px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: medium;
+    background-color: goldenrod;
+    color: navy;
+    margin: 25px;
+    transition: .3s;
+  }
+  button:hover{
+    background-color:darkslategrey ;
+    color: tan;
+  }
+  .container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+    margin: 10px;
+  }
+  img{
+    margin: 25px;
+    border-radius: 50%;
+    box-shadow: 2px 2px 2px rgb(128, 175, 202); 
+    background-color: rgb(196, 233, 255);
+    filter: opacity(85%);
+  }
+</style>
+<body>
+  <header class="header">
+  <h1>寶可夢圖鑑列表</h1>
+  <button onclick='fetchPokemon()'>載入寶可夢圖鑑列表innerHTML</button>
+  <button onclick='fetchPokemon_appendChild()'>載入寶可夢圖鑑列表appenChild</button>
+  <button onclick='reset()'>清空圖鑑</button>
+  </header>
+  <div id="container">
+
+  </div>
+</body>
+
+<script>
+  var container=document.getElementById('container');
+  //載入appendPokemon()內資料;
+  window.onload=appendPokemon();
+
+  //創建圖片;
+  function appendPokemon()
+  {
+    let img=document.createElement('img');
+    img.setAttribute('src','https://assets.pokemon.com/assets/cms2/img/pokedex/detail/001.png');
+    container.appendChild(img);
+  }
+  //利用Element, innerHTML 設定HTML字串
+  function fetchPokemon(){
+    let pokemons="";
+    for(let i= 1; i<890 ;i++)
+    {
+      fileName = i.toString().padStart(3,'0');
+      //若非三位數前面要補0
+      pathFile = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${fileName}.png`;
+      pokemonImg = `<img src = "${pathFile}">`;
+      pokemons += pokemonImg;
+      //debugger;
+    }
+    container.innerHTML = pokemons;
+  }
+
+        function fetchPokemon_appendChild()
+        {
+            container.innerHTML = '';
+            let pokemons = '';
+            for (let i = 1; i < 890; i++) 
+            {
+                let img = document.createElement('img');
+                fileName = i.toString().padStart(3, '0');
+                pathFile = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${fileName}.png`;
+                img.src = pathFile;
+                container.appendChild(img);
+            }
+        }
+
+        function reset() {
+            container.innerHTML = "";
+            container.appendPokemon();
+        }
+</script>
+</html>
